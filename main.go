@@ -3,10 +3,21 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"flag"
 )
 
 func main() {
-	url := "http://www.dmm.co.jp/digital/videoa/-/detail/=/cid=172xrw00494/"
+	
+	var url string
+
+	flag.Parse()
+	if (flag.NArg() == 0) {
+		url = "http://www.dmm.co.jp/digital/videoa/-/detail/=/cid=172xrw00494/"
+	} else if (flag.NArg() == 1) {
+		url = flag.Arg(0)
+	} else {
+		panic("invalid args")
+	}
 
 	result := New(url)
 

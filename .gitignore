@@ -4,7 +4,6 @@
 *.dll
 *.so
 *.dylib
-go_scrape_dmm.co.jp
 
 # Test binary, build with `go test -c`
 *.test

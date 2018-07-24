@@ -1,7 +1,6 @@
 package goScrapeDmmCoJp
 
 import (
-	"regexp"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -22,7 +21,7 @@ type ItemOfDmmCoJp struct {
 	DirectorList         []*Director
 	SeriesList           []*Series
 	KeywordList          []*Keyword
-	SampleImageList      []*SampleImage
+	SampleImageList      []*goScrapeDmmCommon.SampleImage
 }
 
 // Actor : Actor Info Struct
@@ -49,12 +48,6 @@ type Keyword struct {
 	Name string
 }
 
-// SampleImage : SampleImage Info Struct
-type SampleImage struct {
-	ImageThumbURL string
-	ImageURL      string
-}
-
 func New(url string) *ItemOfDmmCoJp {
 
 	doc, err := goquery.NewDocument(url)
@@ -75,10 +68,6 @@ func New(url string) *ItemOfDmmCoJp {
 }
 
 func getItemCode(url string) string {
-	//	cidMatcher := regexp.MustCompile(`cid=([^/]+)`)
-	//	itemCode := cidMatcher.FindString(url)
-	//	itemCode = cidMatcher.ReplaceAllString(itemCode, "$1")
-	//	return itemCode
 	return goScrapeDmmCommon.GetItemCodeFromURL(url)
 }
 
@@ -129,27 +118,6 @@ func getActorList(doc *goquery.Document) []*Actor {
 	return actorList
 }
 
-func getSampleImageList(doc *goquery.Document) []*SampleImage {
-	var sampleImageList []*SampleImage
-
-	sampleImageURLMatcher := regexp.MustCompile(`([^-]+)(-\d+\..+)`)
-
-	doc.Find("#sample-image-block > a").Each(func(index int, selection *goquery.Selection) {
-		sampleImage := SampleImage{}
-
-		imgSrc, exists := selection.Find("img").First().Attr("src")
-		if exists {
-			sampleImage.ImageThumbURL = imgSrc
-
-			imageURL :=
-				sampleImageURLMatcher.ReplaceAllString(imgSrc, "$1") + "jp" +
-					sampleImageURLMatcher.ReplaceAllString(imgSrc, "$2")
-
-			sampleImage.ImageURL = imageURL
-		}
-
-		sampleImageList = append(sampleImageList, &sampleImage)
-	})
-
-	return sampleImageList
+func getSampleImageList(doc *goquery.Document) []*goScrapeDmmCommon.SampleImage {
+	return goScrapeDmmCommon.GetSampleImageList(doc)
 }

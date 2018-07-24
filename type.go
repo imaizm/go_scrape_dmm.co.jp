@@ -1,9 +1,11 @@
-package go_scrape_dmm_co_jp
+package goScrapeDmmCoJp
 
 import (
-	"time"
 	"regexp"
+	"time"
+
 	"github.com/PuerkitoBio/goquery"
+	"github.com/imaizm/go_scrape_dmm-common"
 )
 
 const baseDomain = "http://www.dmm.co.jp"
@@ -26,7 +28,7 @@ type ItemOfDmmCoJp struct {
 // Actor : Actor Info Struct
 type Actor struct {
 	ListPageURL string
-	Name string
+	Name        string
 }
 
 // Director : Director Info Struct
@@ -73,10 +75,11 @@ func New(url string) *ItemOfDmmCoJp {
 }
 
 func getItemCode(url string) string {
-	cidMatcher := regexp.MustCompile(`cid=([^/]+)`)
-	itemCode := cidMatcher.FindString(url)
-	itemCode = cidMatcher.ReplaceAllString(itemCode, "$1")
-	return itemCode
+	//	cidMatcher := regexp.MustCompile(`cid=([^/]+)`)
+	//	itemCode := cidMatcher.FindString(url)
+	//	itemCode = cidMatcher.ReplaceAllString(itemCode, "$1")
+	//	return itemCode
+	return goScrapeDmmCommon.GetItemCodeFromURL(url)
 }
 
 func getTitle(doc *goquery.Document) string {
@@ -89,7 +92,7 @@ func getPackageImageThumbURL(doc *goquery.Document, itemCode string) string {
 	packageImageThumbURL := ""
 	doc.Find("#package-src-" + itemCode).Each(func(index int, selection *goquery.Selection) {
 		imgSrc, exists := selection.Attr("src")
-		if(exists) {
+		if exists {
 			packageImageThumbURL = imgSrc
 		}
 	})
@@ -100,13 +103,12 @@ func getPackageImageURL(doc *goquery.Document, itemCode string) string {
 	packageImageURL := ""
 	doc.Find("#" + itemCode).Each(func(index int, selection *goquery.Selection) {
 		aHref, exists := selection.Attr("href")
-		if(exists) {
+		if exists {
 			packageImageURL = aHref
 		}
 	})
 	return packageImageURL
 }
-
 
 func getActorList(doc *goquery.Document) []*Actor {
 	var actorList []*Actor
@@ -117,7 +119,7 @@ func getActorList(doc *goquery.Document) []*Actor {
 		actor.Name = selection.Text()
 
 		href, exists := selection.Attr("href")
-		if(exists) {
+		if exists {
 			actor.ListPageURL = baseDomain + href
 		}
 
@@ -136,13 +138,13 @@ func getSampleImageList(doc *goquery.Document) []*SampleImage {
 		sampleImage := SampleImage{}
 
 		imgSrc, exists := selection.Find("img").First().Attr("src")
-		if(exists) {
+		if exists {
 			sampleImage.ImageThumbURL = imgSrc
-			
+
 			imageURL :=
 				sampleImageURLMatcher.ReplaceAllString(imgSrc, "$1") + "jp" +
-				sampleImageURLMatcher.ReplaceAllString(imgSrc, "$2")
-		
+					sampleImageURLMatcher.ReplaceAllString(imgSrc, "$2")
+
 			sampleImage.ImageURL = imageURL
 		}
 

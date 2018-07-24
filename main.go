@@ -1,19 +1,19 @@
-package go_scrape_dmm_co_jp
+package goScrapeDmmCoJp
 
 import (
+	"flag"
 	"fmt"
 	"strconv"
-	"flag"
 )
 
 func main() {
-	
+
 	var url string
 
 	flag.Parse()
-	if (flag.NArg() == 0) {
+	if flag.NArg() == 0 {
 		url = "http://www.dmm.co.jp/digital/videoa/-/detail/=/cid=172xrw00494/"
-	} else if (flag.NArg() == 1) {
+	} else if flag.NArg() == 1 {
 		url = flag.Arg(0)
 	} else {
 		panic("invalid args")

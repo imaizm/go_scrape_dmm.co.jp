@@ -1,4 +1,4 @@
-package main
+package go_scrape_dmm_co_jp
 
 import (
 	"time"

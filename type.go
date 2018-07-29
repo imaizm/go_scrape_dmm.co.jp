@@ -48,6 +48,7 @@ type Keyword struct {
 	Name string
 }
 
+// New : create ItemOfDmmCoJp struct from url
 func New(url string) *ItemOfDmmCoJp {
 
 	doc, err := goquery.NewDocument(url)

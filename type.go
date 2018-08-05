@@ -122,3 +122,60 @@ func getActorList(doc *goquery.Document) []*Actor {
 func getSampleImageList(doc *goquery.Document) []*goScrapeDmmCommon.SampleImage {
 	return goScrapeDmmCommon.GetSampleImageList(doc)
 }
+
+// Search : search by keyword
+func Search(searchKeyword string) []*SearchListItem {
+	url := baseDomain + "/search/=/searchstr=" + searchKeyword + "/limit=120/sort=rankprofile/"
+
+	doc, err := goquery.NewDocument(url)
+	if err != nil {
+		panic(err)
+	}
+
+	listSelection := getSearchListSelection(doc)
+	searchListItemList := getSearchListItemList(listSelection)
+
+	return searchListItemList
+}
+
+func getSearchListSelection(doc *goquery.Document) *goquery.Selection {
+	listSelection := doc.Find("ul#list li")
+	if listSelection.Text() == "" {
+		panic("goScrapeDmmCoJp.getSearchListSelection: search list retrive fail")
+	}
+	return listSelection
+}
+
+// SearchListItem : list item of search result
+type SearchListItem struct {
+	ItemDetailURL string
+	Title         string
+}
+
+func getSearchListItemList(listSelection *goquery.Selection) []*SearchListItem {
+	var searchListItemList []*SearchListItem
+
+	listSelection.Each(func(index int, selection *goquery.Selection) {
+		searchListItem := SearchListItem{}
+
+		listItemSelectionCheck := selection.Find("div p.tmb a")
+		if listItemSelectionCheck.Text() == "" {
+			panic("goScrapeDmmCoJp.getSearchListItemList: list item retrive fail")
+		}
+		listItemSelection := listItemSelectionCheck.First()
+		aHref, _ := listItemSelection.Attr("href")
+		searchListItem.ItemDetailURL = aHref
+
+		listItemImageSelectionCheck := listItemSelection.Find("span img")
+		if _, err := listItemImageSelectionCheck.Html(); err != nil {
+			panic("goScrapeDmmCoJp.getSearchListItemList: list item image retrive fail")
+		}
+		listItemImageSelection := listItemImageSelectionCheck
+		imgAlt, _ := listItemImageSelection.Attr("alt")
+		searchListItem.Title = imgAlt
+
+		searchListItemList = append(searchListItemList, &searchListItem)
+	})
+
+	return searchListItemList
+}

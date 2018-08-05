@@ -23,3 +23,14 @@ func TestNew(t *testing.T) {
 		t.Log("\t" + strconv.Itoa(index) + " : " + value.ImageThumbURL + " : " + value.ImageURL)
 	}
 }
+
+func TestSearch(t *testing.T) {
+	searchKeyword := "MIDE-431"
+
+	resultList := Search(searchKeyword)
+
+	for index, value := range resultList {
+		t.Log(strconv.Itoa(index) + " : " + value.Title)
+		t.Log(strconv.Itoa(index) + " : " + value.ItemDetailURL)
+	}
+}

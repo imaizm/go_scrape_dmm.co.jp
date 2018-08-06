@@ -48,8 +48,8 @@ type Keyword struct {
 	Name string
 }
 
-// New : create ItemOfDmmCoJp struct from url
-func New(url string) *ItemOfDmmCoJp {
+// GetItemInfoFromURL : create ItemOfDmmCoJp struct from url
+func GetItemInfoFromURL(url string) *ItemOfDmmCoJp {
 
 	doc, err := goquery.NewDocument(url)
 	if err != nil {

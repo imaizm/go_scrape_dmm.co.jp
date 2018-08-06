@@ -8,7 +8,7 @@ import (
 func TestNew(t *testing.T) {
 	url := "http://www.dmm.co.jp/digital/videoa/-/detail/=/cid=172xrw00494/"
 
-	result := New(url)
+	result := GetItemInfoFromURL(url)
 
 	t.Log("ItemCode : " + result.ItemCode)
 	t.Log("Title : " + result.Title)

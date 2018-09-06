@@ -1,6 +1,7 @@
 package goScrapeDmmCoJp
 
 import (
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -140,7 +141,7 @@ func Search(searchKeyword string) []*SearchListItem {
 
 func getSearchListSelection(doc *goquery.Document) *goquery.Selection {
 	listSelection := doc.Find("ul#list li")
-	if listSelection.Text() == "" {
+	if _, err := listSelection.Html(); err != nil {
 		panic("goScrapeDmmCoJp.getSearchListSelection: search list retrive fail")
 	}
 	return listSelection
@@ -174,8 +175,18 @@ func getSearchListItemList(listSelection *goquery.Selection) []*SearchListItem {
 		imgAlt, _ := listItemImageSelection.Attr("alt")
 		searchListItem.Title = imgAlt
 
-		searchListItemList = append(searchListItemList, &searchListItem)
+		if filterSearchListItem(&searchListItem) {
+			searchListItemList = append(searchListItemList, &searchListItem)
+		}
 	})
 
 	return searchListItemList
+}
+
+func filterSearchListItem(searchListItem *SearchListItem) bool {
+	if strings.Contains(searchListItem.ItemDetailURL, "/rental/") {
+		return false
+	}
+
+	return true
 }

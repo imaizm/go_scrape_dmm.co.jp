@@ -60,6 +60,7 @@ func GetItemInfoFromURL(url string) *ItemOfDmmCoJp {
 	result := ItemOfDmmCoJp{}
 
 	result.ItemCode = getItemCode(url)
+//	pid = getProductId(doc)
 	result.Title = getTitle(doc)
 	result.PackageImageThumbURL = getPackageImageThumbURL(doc, result.ItemCode)
 	result.PackageImageURL = getPackageImageURL(doc, result.ItemCode)
@@ -71,6 +72,12 @@ func GetItemInfoFromURL(url string) *ItemOfDmmCoJp {
 
 func getItemCode(url string) string {
 	return goScrapeDmmCommon.GetItemCodeFromURL(url)
+}
+
+func getProductId(doc *goquery.Document) string {
+	selection := doc.Find("meta[property='og:image']")
+	title := selection.First().Text()
+	return title
 }
 
 func getTitle(doc *goquery.Document) string {
